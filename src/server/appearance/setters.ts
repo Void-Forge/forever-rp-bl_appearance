@@ -246,8 +246,8 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
         ) VALUES (?, ?, ?, ?);
       `,
       [
-        mapper[key],
-        data.texture,
+        'faceFeatures',
+        mapper[data.id],
         data.value,
         frameworkId,
       ]
