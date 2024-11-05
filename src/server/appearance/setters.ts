@@ -255,15 +255,21 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
   });
 
   queries.push([
+    // `
+    //   UPDATE user_characters SET
+    //   user_characters.model = ?,
+    //   user_characters.hair_color = ?,
+    //   user_characters.hair_highlight = ?
+    //   WHERE id = ?;
+    // `,
     `
-      UPDATE user_character SET
-      user_character.model = ?,
-      user_character.hair_color = ?,
-      user_character.hair_highlight = ?
+      UPDATE user_characters SET
+      user_characters.hair_color = ?,
+      user_characters.hair_highlight = ?
       WHERE id = ?;
     `,
     [
-      appearance.model,
+      // appearance.model,
       appearance.hairColor.color,
       appearance.hairColor.highlight,
       frameworkId,
