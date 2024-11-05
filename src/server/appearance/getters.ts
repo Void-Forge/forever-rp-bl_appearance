@@ -82,7 +82,7 @@ async function getAppearance(src: number, frameworkId: string) {
     [frameworkId]
   );
 
-  const tattoos = await oxmysql.oxmysql.prepare(
+  const tattoos = await oxmysql.single(
     "SELECT zone, name, label, collection, hash_male, hash_female, opacity FROM user_character_tattoos WHERE character_id = ?",
     [frameworkId]
   );
@@ -95,7 +95,7 @@ async function getAppearance(src: number, frameworkId: string) {
     return acc;
   }, {});
 
-  const components = await oxmysql.prepare(
+  const components = await oxmysql.single(
     "SELECT type, component_id, texture, drawable FROM user_character_components WHERE character_id = ?",
     [frameworkId]
   );
@@ -111,7 +111,7 @@ async function getAppearance(src: number, frameworkId: string) {
     return acc;
   }, {});
 
-  const overlays = await oxmysql.prepare(
+  const overlays = await oxmysql.single(
     "SELECT name, style, opacity, second_color, color FROM user_character_overlays WHERE character_id = ?",
     [frameworkId]
   );
@@ -155,7 +155,7 @@ async function getAppearance(src: number, frameworkId: string) {
     mapper: {
       'Nose_Width': 'noseWidth',
       'Nose_Peak_Height': 'nosePeakHigh',
-      'Nose_Peak_Lenght': 'nosePeakLowering',
+      'Nose_Peak_Lenght': 'nosePeakSize',
       'Nose_Bone_Height': 'noseBoneHigh',
       'Nose_Peak_Lowering': 'nosePeakLowering',
       'Nose_Bone_Twist': 'noseBoneTwist',
@@ -310,7 +310,7 @@ async function getAppearance(src: number, frameworkId: string) {
       'MolesFreckles': 'molesAndFreckles',
       'ChestHair': 'chestHair',
       'BodyBlemishes': 'bodyBlemishes',
-      'AddBodyBlemishes': '',
+      'AddBodyBlemishes': 'extraBodyBlemishes',
       'EyeColor': 'eyeColor',
     },
   }
