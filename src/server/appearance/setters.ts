@@ -276,11 +276,31 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
     ]
   ]);
 
-//   }
+  const tattoos = appearance.tattoos || []; //Is this needed?
+
+  Object.keys(appearance.tattoos).forEach(key => {
+    const data = appearance.tattoos[key]
+    queries.push([
+      `
+        INSERT INTO user_character_tattoos (
+          zone,
+          name,
+          label,
+          collection,
+          hash_male,
+          hash_female,
+          opacity
+          character_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+      `,
+      [
+        
+      ]
+    ]);
+  });
 
   const success = await oxmysql.transaction(queries)
 
-	// const tattoos = appearance.tattoos || [];
 
 	// const result = await oxmysql.prepare(
 	// 	'INSERT INTO appearance (id, clothes, skin, tattoos) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE clothes = VALUES(clothes), skin = VALUES(skin), tattoos = VALUES(tattoos);',
