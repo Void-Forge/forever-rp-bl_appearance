@@ -278,6 +278,13 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
     ]
   ]);
 
+  queries.push([
+    `DELETE FROM user_character_tattoos WHERE user_character_tattoos.character_id = ?;`,
+    [
+      frameworkId,
+    ]
+  ]);
+
   Object.keys(appearance.tattoos || {}).forEach(key => {
     const data = appearance.tattoos[key]
     queries.push([
