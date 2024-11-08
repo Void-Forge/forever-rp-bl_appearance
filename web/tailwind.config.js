@@ -20,7 +20,7 @@ export default {
         colors: {
             'primary': '#252525',
             'secondary': '#3C3C3C',
-            'accent': '#8685ef',
+            'accent': '#00FFFF',
 
             'success': '#7FEB9D',
             'error': '#E5283E',

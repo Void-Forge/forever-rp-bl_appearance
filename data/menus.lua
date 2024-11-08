@@ -5,7 +5,7 @@ local menus = {
 	},
 
 	clothing = {
-		tabs = { "clothes", "accessories"},
+		tabs = { "clothes", "accessories", "outfits"},
 		allowExit = true,
 	},
 
