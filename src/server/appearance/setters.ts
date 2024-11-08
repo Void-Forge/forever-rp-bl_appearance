@@ -262,9 +262,6 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
     ]);
   });
 
-  const config = exports.bl_appearance
-  const model = config.models()[appearance.modelIndex]
-
   queries.push([
     `
       UPDATE user_characters SET
@@ -273,12 +270,6 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
       user_characters.hair_highlight = ?
       WHERE id = ?;
     `,
-    // `
-    //   UPDATE user_characters SET
-    //   user_characters.hair_color = ?,
-    //   user_characters.hair_highlight = ?
-    //   WHERE id = ?;
-    // `,
     [
       findModelName(appearance.model),
       appearance.hairColor.color,
@@ -298,7 +289,7 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
           collection,
           hash_male,
           hash_female,
-          opacity
+          opacity,
           character_id
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
       `,
@@ -316,17 +307,6 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
   });
 
   const success = await oxmysql.transaction(queries)
-
-
-	// const result = await oxmysql.prepare(
-	// 	'INSERT INTO appearance (id, clothes, skin, tattoos) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE clothes = VALUES(clothes), skin = VALUES(skin), tattoos = VALUES(tattoos);',
-	// 	[
-	// 		frameworkId,
-	// 		JSON.stringify(clothes), // done
-	// 		JSON.stringify(skin), // done
-	// 		JSON.stringify(tattoos),
-	// 	]
-	// );
 
 	return success;
 }
