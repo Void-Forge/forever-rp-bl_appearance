@@ -278,7 +278,7 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
     ]
   ]);
 
-  Object.keys(appearance.tattoos).forEach(key => {
+  Object.keys(appearance.tattoos || {}}).forEach(key => {
     const data = appearance.tattoos[key]
     queries.push([
       `

@@ -12,6 +12,7 @@ ui_page 'build/index.html'
 -- ui_page 'http://localhost:3000/' --for dev
 
 server_scripts {
+    'data/models.lua',
     'data/config.lua',
     'data/commands.lua',
     'dist/server/**/*.js'
