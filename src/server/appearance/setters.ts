@@ -276,8 +276,6 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
     ]
   ]);
 
-  const tattoos = appearance.tattoos || []; //Is this needed?
-
   Object.keys(appearance.tattoos).forEach(key => {
     const data = appearance.tattoos[key]
     queries.push([
@@ -294,7 +292,14 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
       `,
       [
-        
+        data.tattoo.zone,
+        data.id,
+        data.tattoo.label,
+        data.tattoo.dlc || null,
+        data.tattoo.hash,
+        data.tattoo.hash,
+        data.tattoo.opacity,
+        frameworkId,
       ]
     ]);
   });
