@@ -3,6 +3,14 @@ import { getFrameworkID, onClientCallback, } from '../utils';
 import { oxmysql } from '@overextended/oxmysql';
 import { TTattoo } from '@typings/tattoos';
 
+export function findModelName(target: number): string | null {
+  const config = exports.bl_appearance;
+  const models = config.models();
+
+  const modelName = models.find((model: string) => GetHashKey(model) === target);
+  return modelName || null;
+}
+
 export async function saveSkin(src: number, frameworkId: string, skin: TSkin) {
     if (!frameworkId) {
         frameworkId = getFrameworkID(src);
@@ -254,22 +262,25 @@ export async function saveAppearance(src: number, frameworkId: string, appearanc
     ]);
   });
 
+  const config = exports.bl_appearance
+  const model = config.models()[appearance.modelIndex]
+
   queries.push([
-    // `
-    //   UPDATE user_characters SET
-    //   user_characters.model = ?,
-    //   user_characters.hair_color = ?,
-    //   user_characters.hair_highlight = ?
-    //   WHERE id = ?;
-    // `,
     `
       UPDATE user_characters SET
+      user_characters.model = ?,
       user_characters.hair_color = ?,
       user_characters.hair_highlight = ?
       WHERE id = ?;
     `,
+    // `
+    //   UPDATE user_characters SET
+    //   user_characters.hair_color = ?,
+    //   user_characters.hair_highlight = ?
+    //   WHERE id = ?;
+    // `,
     [
-      // appearance.model,
+      findModelName(appearance.model),
       appearance.hairColor.color,
       appearance.hairColor.highlight,
       frameworkId,
