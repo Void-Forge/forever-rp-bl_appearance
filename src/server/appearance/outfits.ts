@@ -3,10 +3,10 @@ import { config, core, getFrameworkID, getPlayerData, onClientCallback } from ".
 import { Outfit } from "@typings/outfits";
 
 async function getOutfits(src: number, frameworkId: string) {
-    const job = core.GetPlayer(src).job || { name: 'unknown', grade: { name: 'unknown' } }
+    // const job = core.GetPlayer(src).job || { name: 'unknown', grade: { name: 'unknown' } }
 
     try {
-        let response = await oxmysql.prepare('SELECT * FROM outfits WHERE player_id = ? OR (jobname = ? AND jobrank <= ?)', [frameworkId, job.name, job.grade.name]);
+        let response = await oxmysql.prepare('SELECT * FROM user_character_outfits WHERE character_id = ?', [frameworkId]);
 
         if (!response || response.length === 0) {
             return [];
@@ -15,12 +15,12 @@ async function getOutfits(src: number, frameworkId: string) {
         if (!Array.isArray(response)) response = [response];
 
         const outfits = response.map(
-            (outfit: { id: number; label: string; outfit: string; jobname?: string }) => {
+            (outfit: { id: number; name: string; appearance: string;}) => {
                 return {
                     id: outfit.id,
-                    label: outfit.label,
-                    outfit: JSON.parse(outfit.outfit),
-                    jobname: outfit.jobname,
+                    label: outfit.name,
+                    outfit: JSON.parse(outfit.appearance),
+                    jobname: null,
                 };
             }
         );
@@ -39,7 +39,7 @@ exports('GetOutfits', getOutfits);
 async function renameOutfit(src: number, data: { id: number; label: string }) {
     const frameworkId = getFrameworkID(src);
     const result = await oxmysql.update(
-        'UPDATE outfits SET label = ? WHERE player_id = ? AND id = ?',
+        'UPDATE user_character_outfits SET name = ? WHERE character_id = ? AND id = ?',
         [data.label, frameworkId, data.id]
     );
     return result;
@@ -50,7 +50,7 @@ exports('RenameOutfit', renameOutfit);
 async function deleteOutfit(src: number, id: number) {
     const frameworkId = getFrameworkID(src);
     const result = await oxmysql.update(
-        'DELETE FROM outfits WHERE player_id = ? AND id = ?',
+        'DELETE FROM user_character_outfits WHERE character_id = ? AND id = ?',
         [frameworkId, id]
     );
     return result > 0;
@@ -67,8 +67,8 @@ async function saveOutfit(src: number, data: Outfit) {
         jobrank = data.job.rank;
     }
     const id = await oxmysql.insert(
-        'INSERT INTO outfits (player_id, label, outfit, jobname, jobrank) VALUES (?, ?, ?, ?, ?)',
-        [frameworkId, data.label, JSON.stringify(data.outfit), jobname, jobrank]
+        'INSERT INTO user_character_outfits (character_id, name, appearance) VALUES (?, ?, ?)',
+        [frameworkId, data.label, JSON.stringify(data.outfit)]
     );
     return id;
 }
@@ -78,7 +78,7 @@ exports('SaveOutfit', saveOutfit);
 
 async function fetchOutfit(_: number, id: number) {
     const response = await oxmysql.prepare(
-        'SELECT outfit FROM outfits WHERE id = ?',
+        'SELECT appearance FROM user_character_outfits WHERE id = ? LIMIT 1',
         [id]
     );
     return JSON.parse(response[0]);
@@ -88,7 +88,7 @@ exports('FetchOutfit', fetchOutfit);
 
 async function importOutfit(_: number, frameworkId: string, outfitId: number, outfitName: string) {
     const result = await oxmysql.query(
-        'SELECT label, outfit FROM outfits WHERE id = ?',
+        'SELECT name, appearance FROM user_character_outfits WHERE id = ?',
         [outfitId]
     );
 
@@ -96,10 +96,10 @@ async function importOutfit(_: number, frameworkId: string, outfitId: number, ou
         return { success: false, message: 'Outfit not found' };
     }
 
-    const outfit = result[0].outfit;
+    const outfit = result[0].appearance;
 
     const newId = await oxmysql.insert(
-        'INSERT INTO outfits (player_id, label, outfit) VALUES (?, ?, ?)',
+        'INSERT INTO user_character_outfits (character_id, name, appearance) VALUES (?, ?, ?)',
         [frameworkId, outfitName, outfit]
     );
 

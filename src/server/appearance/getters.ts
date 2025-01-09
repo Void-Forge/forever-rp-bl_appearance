@@ -388,6 +388,7 @@ async function getAppearance(src: number, frameworkId: string) {
     return acc;
   }, {});
 
+  //Why is this not deleted?
   // for (let i = 0; i < TATTOO_LIST.length; i++) {
   //   if (tattoosData[zone] && tattoosData[zone].collections[collection]) {
 
