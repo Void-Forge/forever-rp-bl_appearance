@@ -19,7 +19,7 @@ async function getOutfits(src: number, frameworkId: string) {
                 return {
                     id: outfit.id,
                     label: outfit.name,
-                    outfit: JSON.parse(outfit.appearance),
+                    outfit: outfit.appearance,
                     jobname: null,
                 };
             }
