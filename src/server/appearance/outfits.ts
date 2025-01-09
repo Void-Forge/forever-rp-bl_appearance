@@ -19,7 +19,7 @@ async function getOutfits(src: number, frameworkId: string) {
                 return {
                     id: outfit.id,
                     label: outfit.name,
-                    outfit: outfit.appearance,
+                    outfit: JSON.parse(outfit.appearance),
                     jobname: null,
                 };
             }
@@ -81,6 +81,7 @@ async function fetchOutfit(_: number, id: number) {
         'SELECT appearance FROM user_character_outfits WHERE id = ? LIMIT 1',
         [id]
     );
+    console.log('Pauls a cunt', response);
     return JSON.parse(response[0]);
 }
 onClientCallback('bl_appearance:server:fetchOutfit', fetchOutfit);
