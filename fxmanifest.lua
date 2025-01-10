@@ -15,6 +15,7 @@ server_scripts {
     'data/models.lua',
     'data/config.lua',
     'data/commands.lua',
+    'data/tattoos.lua',
     'dist/server/**/*.js'
 }
 
