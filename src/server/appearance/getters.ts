@@ -444,7 +444,7 @@ async function getTattoos(src: number, frameworkId: string) {
       }, {});
     }
 
-    return tattoosData;
+    return
 }
 onClientCallback('bl_appearance:server:getTattoos', getTattoos);
 exports('GetPlayerTattoos', function(id) {
@@ -753,7 +753,7 @@ async function getAppearance(src: number, frameworkId: string) {
 
   const isFemale = character.model == 'mp_f_freemode_01'
 
-  let tattooZones = []
+  let tattooZones: any = []
   const [TATTOO_LIST, TATTOO_CATEGORIES] = exports.bl_appearance.tattoos()
   for (let i = 0; i < TATTOO_CATEGORIES.length; i++) {
       const category = TATTOO_CATEGORIES[i]
@@ -783,43 +783,34 @@ async function getAppearance(src: number, frameworkId: string) {
     [frameworkId]
   );
 
-  var tattoosData = [];
-  if (tattoos) {
-    tattoosData = tattoos.reduce((acc, { zone, name, label, collection, hash_male, hash_female, opacity }) => {
-      if (!acc[zone]) {
-        acc[zone] = {};
+  if (tattoos && tattoos.length > 0) {
+    tattoos.forEach(({ zone, name, label, collection, hash_male, hash_female, opacity }) => {
+      const tattooHash = isFemale ? hash_female : hash_male;
+
+      const zoneData = tattooZones.find(z => z.zone === zone);
+      if (!zoneData) {
+        return;
       }
-  
-      acc[zone].collections[collection] = {
-        name: name,
-        label: label,
-        hash_male: hash_male,
-        hash_female: hash_female,
+
+      const dlcData = zoneData.dlcs.find(dlc => dlc.label === collection);
+      if (!dlcData) {
+        return;
+      }
+
+      dlcData.tattoos.push({
+        label: name,
+        hash: tattooHash,
+        zone: zone,
+        dlc: collection,
         opacity: opacity,
-      };
-  
-      return acc;
-    }, {});
+      });
+    });
   }
-
-  //Why is this not deleted?
-  // for (let i = 0; i < TATTOO_LIST.length; i++) {
-  //   if (tattoosData[zone] && tattoosData[zone].collections[collection]) {
-
-  //   }
-  
-  //   tattoosData[zone].dlcs[i].tattoos.push({
-  //     label: label,
-  //     hash: hash_female || hash_male,
-  //     zone: zone,
-  //     dlc: collection,
-  //   })
-  // }
 
   return {
     ...skin,
     ...clothes,
-    tattoos: tattoosData,
+    tattoos: tattooZones,
   };
 }
 
