@@ -77,7 +77,7 @@ async function getAppearance(src: number, frameworkId: string) {
     [frameworkId]
   );
 
-  const features = await oxmysql.single(
+  const features = await oxmysql.prepare(
     "SELECT name, value, type FROM user_character_features WHERE character_id = ?",
     [frameworkId]
   );
@@ -95,7 +95,7 @@ async function getAppearance(src: number, frameworkId: string) {
     return acc;
   }, {});
 
-  const components = await oxmysql.single(
+  const components = await oxmysql.prepare(
     "SELECT type, component_id, texture, drawable FROM user_character_components WHERE character_id = ?",
     [frameworkId]
   );
@@ -111,7 +111,7 @@ async function getAppearance(src: number, frameworkId: string) {
     return acc;
   }, {});
 
-  const overlays = await oxmysql.single(
+  const overlays = await oxmysql.prepare(
     "SELECT name, style, opacity, second_color, color FROM user_character_overlays WHERE character_id = ?",
     [frameworkId]
   );
