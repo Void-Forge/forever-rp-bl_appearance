@@ -82,25 +82,26 @@ async function getAppearance(src: number, frameworkId: string) {
     [frameworkId]
   );
 
-  const tattoos = await oxmysql.prepare(
-    "SELECT zone, name, label, collection, hash_male, hash_female, opacity FROM user_character_tattoos WHERE character_id = ?",
-    [frameworkId]
-  );
-
-  const featuresData = features.reduce((acc, { name, value, type }) => {
-    if (!acc[type]) {
-      acc[type] = {};
-    }
-    acc[type][name] = value;
-    return acc;
-  }, {});
+  var featuresData = [];
+  if (features) {
+    featuresData = features.reduce((acc, { name, value, type }) => {
+      if (!acc[type]) {
+        acc[type] = {};
+      }
+      acc[type][name] = value;
+      return acc;
+    }, {});
+  }
 
   const components = await oxmysql.prepare(
     "SELECT type, component_id, texture, drawable FROM user_character_components WHERE character_id = ?",
     [frameworkId]
   );
 
-  const componentsData = components.reduce((acc, { component_id, texture, drawable, type }) => {
+  var componentsData = [];
+  if(components) {
+
+    componentsData = components.reduce((acc, { component_id, texture, drawable, type }) => {
     if (!acc[type]) {
       acc[type] = {};
     }
@@ -110,24 +111,28 @@ async function getAppearance(src: number, frameworkId: string) {
     };
     return acc;
   }, {});
+  }
 
   const overlays = await oxmysql.prepare(
     "SELECT name, style, opacity, second_color, color FROM user_character_overlays WHERE character_id = ?",
     [frameworkId]
   );
 
-  const overlaysData = components.reduce((acc, { name, style, opacity, second_color, color }) => {
-    if (!acc[name]) {
-      acc[name] = {};
-    }
-    acc[name] = {
-      style: style,
-      opacity: opacity,
-      secondColor: second_color,
-      color: color,
-    };
-    return acc;
-  }, {});
+  var overlaysData = [];
+  if (components) {
+    overlaysData = components.reduce((acc, { name, style, opacity, second_color, color }) => {
+      if (!acc[name]) {
+        acc[name] = {};
+      }
+      acc[name] = {
+        style: style,
+        opacity: opacity,
+        secondColor: second_color,
+        color: color,
+      };
+      return acc;
+    }, {});
+  }
 
   const faceData = {
     crap: [
@@ -372,21 +377,30 @@ async function getAppearance(src: number, frameworkId: string) {
       }
   }
 
-  const tattoosData = tattoos.reduce((acc, { zone, name, label, collection, hash_male, hash_female, opacity }) => {
-    if (!acc[zone]) {
-      acc[zone] = {};
-    }
+  
+  const tattoos = await oxmysql.prepare(
+    "SELECT zone, name, label, collection, hash_male, hash_female, opacity FROM user_character_tattoos WHERE character_id = ?",
+    [frameworkId]
+  );
 
-    acc[zone].collections[collection] = {
-      name: name,
-      label: label,
-      hash_male: hash_male,
-      hash_female: hash_female,
-      opacity: opacity,
-    };
-
-    return acc;
-  }, {});
+  var tattoosData = [];
+  if (tattoos) {
+    tattoosData = tattoos.reduce((acc, { zone, name, label, collection, hash_male, hash_female, opacity }) => {
+      if (!acc[zone]) {
+        acc[zone] = {};
+      }
+  
+      acc[zone].collections[collection] = {
+        name: name,
+        label: label,
+        hash_male: hash_male,
+        hash_female: hash_female,
+        opacity: opacity,
+      };
+  
+      return acc;
+    }, {});
+  }
 
   //Why is this not deleted?
   // for (let i = 0; i < TATTOO_LIST.length; i++) {
