@@ -420,31 +420,61 @@ async function getTattoos(src: number, frameworkId: string) {
         frameworkId = getFrameworkID(src);
     }
 
+    let tattooZones: any = []
+    const [TATTOO_LIST, TATTOO_CATEGORIES] = exports.bl_appearance.tattoos()
+    for (let i = 0; i < TATTOO_CATEGORIES.length; i++) {
+        const category = TATTOO_CATEGORIES[i]
+        const zone = category.zone
+        const label = category.label
+        const index = category.index
+        tattooZones[index] = {
+            zone: zone,
+            label: label,
+            zoneIndex: index,
+            dlcs: []
+        }
+  
+        for (let j = 0; j < TATTOO_LIST.length; j++) {
+            const dlcData = TATTOO_LIST[j]
+            tattooZones[index].dlcs.push({
+                label: dlcData.dlc,
+                dlcIndex: j,
+                tattoos: []
+            })
+        }
+    }
+  
+    
     const tattoos = await oxmysql.prepare(
       "SELECT zone, name, label, collection, hash_male, hash_female, opacity FROM user_character_tattoos WHERE character_id = ?",
       [frameworkId]
     );
   
-    var tattoosData = [];
-    if (tattoos) {
-      tattoosData = tattoos.reduce((acc, { zone, name, label, collection, hash_male, hash_female, opacity }) => {
-        if (!acc[zone]) {
-          acc[zone] = {};
+    if (tattoos && tattoos.length > 0) {
+      tattoos.forEach(({ zone, name, label, collection, hash_male, hash_female, opacity }) => {
+        const tattooHash = hash_male;
+  
+        const zoneData = tattooZones.find(z => z.zone === zone);
+        if (!zoneData) {
+          return;
         }
-    
-        acc[zone].collections[collection] = {
-          name: name,
-          label: label,
-          hash_male: hash_male,
-          hash_female: hash_female,
+  
+        const dlcData = zoneData.dlcs.find(dlc => dlc.label === collection);
+        if (!dlcData) {
+          return;
+        }
+  
+        dlcData.tattoos.push({
+          label: name,
+          hash: tattooHash,
+          zone: zone,
+          dlc: collection,
           opacity: opacity,
-        };
-    
-        return acc;
-      }, {});
+        });
+      });
     }
 
-    return
+    return tattooZones
 }
 onClientCallback('bl_appearance:server:getTattoos', getTattoos);
 exports('GetPlayerTattoos', function(id) {
@@ -785,7 +815,7 @@ async function getAppearance(src: number, frameworkId: string) {
 
   if (tattoos && tattoos.length > 0) {
     tattoos.forEach(({ zone, name, label, collection, hash_male, hash_female, opacity }) => {
-      const tattooHash = isFemale ? hash_female : hash_male;
+      const tattooHash = hash_male;
 
       const zoneData = tattooZones.find(z => z.zone === zone);
       if (!zoneData) {
