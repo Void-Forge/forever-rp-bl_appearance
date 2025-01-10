@@ -82,7 +82,7 @@ async function getAppearance(src: number, frameworkId: string) {
     [frameworkId]
   );
 
-  const tattoos = await oxmysql.single(
+  const tattoos = await oxmysql.prepare(
     "SELECT zone, name, label, collection, hash_male, hash_female, opacity FROM user_character_tattoos WHERE character_id = ?",
     [frameworkId]
   );
