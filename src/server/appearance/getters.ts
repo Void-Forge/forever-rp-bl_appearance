@@ -349,7 +349,7 @@ async function getAppearance(src: number, frameworkId: string) {
   const isFemale = character.model == 'mp_f_freemode_01'
 
   let tattooZones = []
-  const [TATTOO_LIST, TATTOO_CATEGORIES] = exports.bl_appearance.tattoos()
+  const [TATTOO_LIST, TATTOO_CATEGORIES] = exports.bl_appearance.data.tattoos()
   for (let i = 0; i < TATTOO_CATEGORIES.length; i++) {
       const category = TATTOO_CATEGORIES[i]
       const zone = category.zone
