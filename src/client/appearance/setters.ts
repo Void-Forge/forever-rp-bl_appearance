@@ -164,25 +164,25 @@ export function resetToggles(data) {
 exports('SetPedClothes', setPedClothes);
 
 export function setPedClothes(pedHandle: number, data: TClothes) {
-    if (!data) return console.warn('No data provided for setPedClothes')
+    // if (!data) return console.warn('No data provided for setPedClothes')
 
-    const drawables = data.drawables
-    const props = data.props
-    const headOverlay = data.headOverlay
-    for (const id in drawables) {
-        const drawable = drawables[id]
-        setDrawable(pedHandle, drawable)
-    }
+    // const drawables = data.drawables
+    // const props = data.props
+    // const headOverlay = data.headOverlay
+    // for (const id in drawables) {
+    //     const drawable = drawables[id]
+    //     setDrawable(pedHandle, drawable)
+    // }
 
-    for (const id in props) {
-        const prop = props[id]
-        setProp(pedHandle, prop)
-    }
+    // for (const id in props) {
+    //     const prop = props[id]
+    //     setProp(pedHandle, prop)
+    // }
 
-    if (headOverlay) for (const id in headOverlay) {
-        const overlay = {...headOverlay[id], id: id}
-        setHeadOverlay(pedHandle, overlay)
-    }
+    // if (headOverlay) for (const id in headOverlay) {
+    //     const overlay = {...headOverlay[id], id: id}
+    //     setHeadOverlay(pedHandle, overlay)
+    // }
 }
 exports('SetPedClothes', setPedClothes);
 
