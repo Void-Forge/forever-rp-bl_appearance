@@ -3,148 +3,147 @@ import { getFrameworkID, onClientCallback } from "../utils";
 import { SkinDB } from "@typings/appearance";
 
 async function getSkin(src: number, frameworkId: string) {
-//     if (!frameworkId) {
-//         frameworkId = getFrameworkID(src);
-//     }
+    if (!frameworkId) {
+        frameworkId = getFrameworkID(src);
+    }
 
-//     const character = await oxmysql.single(
-//       "SELECT model, hair_texture, hair_color, hair_highlight, hair_style FROM user_characters WHERE id = ? LIMIT 1",
-//       [frameworkId]
-//     );
+    const character = await oxmysql.single(
+      "SELECT model, hair_texture, hair_color, hair_highlight, hair_style FROM user_characters WHERE id = ? LIMIT 1",
+      [frameworkId]
+    );
   
-//     const features = await oxmysql.prepare(
-//       "SELECT name, value, type FROM user_character_features WHERE character_id = ?",
-//       [frameworkId]
-//     );
+    const features = await oxmysql.prepare(
+      "SELECT name, value, type FROM user_character_features WHERE character_id = ?",
+      [frameworkId]
+    );
   
-//     var featuresData: any = [];
-//     if (features) {
-//       featuresData = features.reduce((acc, { name, value, type }) => {
-//         if (!acc[type]) {
-//           acc[type] = {};
-//         }
-//         acc[type][name] = value;
-//         return acc;
-//       }, {});
-//     }
+    var featuresData: any = [];
+    if (features) {
+      featuresData = features.reduce((acc, { name, value, type }) => {
+        if (!acc[type]) {
+          acc[type] = {};
+        }
+        acc[type][name] = value;
+        return acc;
+      }, {});
+    }
   
-//     const components = await oxmysql.prepare(
-//       "SELECT type, component_id, texture, drawable FROM user_character_components WHERE character_id = ?",
-//       [frameworkId]
-//     );
+    const components = await oxmysql.prepare(
+      "SELECT type, component_id, texture, drawable FROM user_character_components WHERE character_id = ?",
+      [frameworkId]
+    );
   
-//     var componentsData: any = [];
-//     if(components) {
+    var componentsData: any = [];
+    if(components) {
   
-//       componentsData = components.reduce((acc, { component_id, texture, drawable, type }) => {
-//       if (!acc[type]) {
-//         acc[type] = {};
-//       }
-//       acc[type][component_id] = {
-//         texture: texture,
-//         drawable: drawable,
-//       };
-//       return acc;
-//     }, {});
-//     }
+      componentsData = components.reduce((acc, { component_id, texture, drawable, type }) => {
+      if (!acc[type]) {
+        acc[type] = {};
+      }
+      acc[type][component_id] = {
+        texture: texture,
+        drawable: drawable,
+      };
+      return acc;
+    }, {});
+    }
   
-//     const overlays = await oxmysql.prepare(
-//       "SELECT name, style, opacity, second_color, color FROM user_character_overlays WHERE character_id = ?",
-//       [frameworkId]
-//     );
+    const overlays = await oxmysql.prepare(
+      "SELECT name, style, opacity, second_color, color FROM user_character_overlays WHERE character_id = ?",
+      [frameworkId]
+    );
   
-//     var overlaysData: any = [];
-//     if (overlays) {
-//       overlaysData = overlays.reduce((acc, { name, style, opacity, second_color, color }) => {
-//         if (!acc[name]) {
-//           acc[name] = {};
-//         }
-//         acc[name] = {
-//           style: style,
-//           opacity: opacity,
-//           secondColor: second_color,
-//           color: color,
-//         };
-//         return acc;
-//       }, {});
-//     }
+    var overlaysData: any = [];
+    if (overlays) {
+      overlaysData = overlays.reduce((acc, { name, style, opacity, second_color, color }) => {
+        if (!acc[name]) {
+          acc[name] = {};
+        }
+        acc[name] = {
+          style: style,
+          opacity: opacity,
+          secondColor: second_color,
+          color: color,
+        };
+        return acc;
+      }, {});
+    }
   
-//     const faceData = {
-//       crap: [
-//         'Nose_Width',
-//         'Nose_Peak_Height',
-//         'Nose_Peak_Lenght',
-//         'Nose_Bone_Height',
-//         'Nose_Peak_Lowering',
-//         'Nose_Bone_Twist',
-//         'EyeBrown_Height',
-//         'EyeBrown_Forward',
-//         'Cheeks_Bone_High',
-//         'Cheeks_Bone_Width',
-//         'Cheeks_Width',
-//         'Eyes_Openning',
-//         'Lips_Thickness',
-//         'Jaw_Bone_Width',
-//         'Jaw_Bone_Back_Lenght',
-//         'Chin_Bone_Lowering',
-//         'Chin_Bone_Length',
-//         'Chin_Bone_Width',
-//         'Chin_Hole',
-//         'Neck_Thikness',
-//       ],
-//       mapper: {
-//         'Nose_Width': 'noseWidth',
-//         'Nose_Peak_Height': 'nosePeakHigh',
-//         'Nose_Peak_Lenght': 'nosePeakSize',
-//         'Nose_Bone_Height': 'noseBoneHigh',
-//         'Nose_Peak_Lowering': 'nosePeakLowering',
-//         'Nose_Bone_Twist': 'noseBoneTwist',
-//         'EyeBrown_Height': 'eyeBrownHigh',
-//         'EyeBrown_Forward': 'eyeBrownForward',
-//         'Cheeks_Bone_High': 'cheeksBoneHigh',
-//         'Cheeks_Bone_Width': 'cheeksBoneWidth',
-//         'Cheeks_Width': 'cheeksWidth',
-//         'Eyes_Openning': 'eyesOpening',
-//         'Lips_Thickness': 'lipsThickness',
-//         'Jaw_Bone_Width': 'jawBoneWidth',
-//         'Jaw_Bone_Back_Lenght': 'jawBoneBackSize',
-//         'Chin_Bone_Lowering': 'chinBoneLowering',
-//         'Chin_Bone_Length': 'chinBoneLenght',
-//         'Chin_Bone_Width': 'chinBoneWidth',
-//         'Chin_Hole': 'chinHole',
-//         'Neck_Thikness': 'neckThickness',
-//       },
-//     }
+    const faceData = {
+      crap: [
+        'Nose_Width',
+        'Nose_Peak_Height',
+        'Nose_Peak_Lenght',
+        'Nose_Bone_Height',
+        'Nose_Peak_Lowering',
+        'Nose_Bone_Twist',
+        'EyeBrown_Height',
+        'EyeBrown_Forward',
+        'Cheeks_Bone_High',
+        'Cheeks_Bone_Width',
+        'Cheeks_Width',
+        'Eyes_Openning',
+        'Lips_Thickness',
+        'Jaw_Bone_Width',
+        'Jaw_Bone_Back_Lenght',
+        'Chin_Bone_Lowering',
+        'Chin_Bone_Length',
+        'Chin_Bone_Width',
+        'Chin_Hole',
+        'Neck_Thikness',
+      ],
+      mapper: {
+        'Nose_Width': 'noseWidth',
+        'Nose_Peak_Height': 'nosePeakHigh',
+        'Nose_Peak_Lenght': 'nosePeakSize',
+        'Nose_Bone_Height': 'noseBoneHigh',
+        'Nose_Peak_Lowering': 'nosePeakLowering',
+        'Nose_Bone_Twist': 'noseBoneTwist',
+        'EyeBrown_Height': 'eyeBrownHigh',
+        'EyeBrown_Forward': 'eyeBrownForward',
+        'Cheeks_Bone_High': 'cheeksBoneHigh',
+        'Cheeks_Bone_Width': 'cheeksBoneWidth',
+        'Cheeks_Width': 'cheeksWidth',
+        'Eyes_Openning': 'eyesOpening',
+        'Lips_Thickness': 'lipsThickness',
+        'Jaw_Bone_Width': 'jawBoneWidth',
+        'Jaw_Bone_Back_Lenght': 'jawBoneBackSize',
+        'Chin_Bone_Lowering': 'chinBoneLowering',
+        'Chin_Bone_Length': 'chinBoneLenght',
+        'Chin_Bone_Width': 'chinBoneWidth',
+        'Chin_Hole': 'chinHole',
+        'Neck_Thikness': 'neckThickness',
+      },
+    }
   
-//     let headStructure = {};
-//     for (let i = 0; i < faceData.crap.length; i++) {
-//       const overlay = faceData.crap[i];
-//       const map = faceData.mapper[overlay]
-//       headStructure[overlay] = {
-//         id: overlay,
-//         index: i,
-//         value: featuresData.faceFeatures[map] || 0,
-//       };
-//     }
+    let headStructure = {};
+    for (let i = 0; i < faceData.crap.length; i++) {
+      const overlay = faceData.crap[i];
+      const map = faceData.mapper[overlay]
+      headStructure[overlay] = {
+        id: overlay,
+        index: i,
+        value: featuresData.faceFeatures[map] || 0,
+      };
+    }
   
-//     return {
-//       headBlend: {
-//         ...featuresData.headBlend,
-//         hasParent: true, // TODO
-//       },
-//       headStructure: headStructure,
-//       hairColor: {
-//         color: character.hair_color,
-//         highlight: character.hair_highlight,
-//       },
-//       model: character.model,
-//     };
-// }
-// onClientCallback('bl_appearance:server:getSkin', getSkin);
-// exports('GetPlayerSkin', function(id) {
-//     return getSkin(null, id)
-{}
- };
+    return {
+      headBlend: {
+        ...featuresData.headBlend,
+        hasParent: true, // TODO
+      },
+      headStructure: headStructure,
+      hairColor: {
+        color: character.hair_color,
+        highlight: character.hair_highlight,
+      },
+      model: character.model,
+    };
+}
+onClientCallback('bl_appearance:server:getSkin', getSkin);
+exports('GetPlayerSkin', function(id) {
+    return getSkin(null, id)
+});
 
 async function getClothes(src: number, frameworkId: string) {
     if (!frameworkId) {
