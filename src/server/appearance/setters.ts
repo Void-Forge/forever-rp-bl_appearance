@@ -17,7 +17,7 @@ export async function saveSkin(src: number, frameworkId: string, skin: TSkin) {
     }
 
     const result = await oxmysql.update(
-        'UPDATE user_character_skins SET appearance = ? WHERE id = ?',
+        'UPDATE appearance SET skin = ? WHERE id = ?',
         [JSON.stringify(skin), frameworkId]
     );
     return result;
@@ -33,7 +33,7 @@ export async function saveClothes(src: number, frameworkId: string, clothes: TCl
     }
     
     const result = await oxmysql.update(
-        'UPDATE user_character_outfits SET appearance = ? WHERE id = ?',
+        'UPDATE appearance SET clothes = ? WHERE id = ?',
         [JSON.stringify(clothes), frameworkId]
     );
     return result;
